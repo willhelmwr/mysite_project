@@ -29,7 +29,7 @@ SECRET_KEY = 'django-insecure-)arub!ivsxqqc$t$jwj5fyk4m=u$_&u0+i@mk!$wt^%r9puhtw
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = [ec2_metadata.public_hostname]
+ALLOWED_HOSTS = [ec2_metadata.public_hostname, ec2_metadata.public_ipv4]
 
 
 # Application definition
