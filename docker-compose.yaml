@@ -1,16 +1,22 @@
 version: '3.8'
 services:
   web:
-    build:
-      context: .
+    build: django
     command: gunicorn --bind 0.0.0.0:8000 mysite_project.wsgi --workers=4
     volumes:
       - static_volume:/app/static
       - media_volume:/app/media
+    env_file:
+      - ./.env.dev
     expose:
       - "8000"
     networks:
       - django-network
+    links:
+      - db:db
+    depends_on:
+      - db
+    restart: unless-stopped
   nginx:
     build: nginx
     restart: always
@@ -23,9 +29,22 @@ services:
       - web
     networks:
       - django-network
+    restart: unless-stopped
+  db:
+    image: postgres:13.0-alpine
+    volumes:
+      - postgres_volume:/var/lib/postgresql/data/
+    environment:
+      - POSTGRES_USER=django
+      - POSTGRES_PASSWORD=djangosecret
+      - POSTGRES_DB=django_dev
+    networks:
+      - django-network
+    restart: unless-stopped
 networks:
   django-network:
     name: django-network
 volumes:
   media_volume:
   static_volume:
+  postgres_volume:
